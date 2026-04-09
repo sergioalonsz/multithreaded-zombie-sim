@@ -1,0 +1,691 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ClassDiagram name="PL_progra-practica">
+  <ClassDiagramComponents>
+    <Class name="Humano" package="clases" visibility="public" xPosition="450.0" yPosition="824.0">
+      <Fields>
+        <Field name="id" type="String" visibility="private"/>
+        <Field name="comidaRecolectada" type="int" visibility="private"/>
+        <Field name="marcado" type="boolean" visibility="private"/>
+        <Field name="apocalipsis" type="Apocalipsis" visibility="private"/>
+        <Field name="random" type="Random" visibility="private"/>
+        <Field name="zonaRiesgoActual" type="ZonaRiesgo" visibility="private"/>
+        <Field name="atacado" type="boolean" visibility="private"/>
+        <Field name="muerto" type="boolean" visibility="private"/>
+        <Field name="ataqueEnProgreso" type="boolean" visibility="private"/>
+        <Field name="ataqueFinalizado" type="boolean" visibility="private"/>
+        <Field name="exitoZombi" type="boolean" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="String" name="id"/>
+          <Argument type="Apocalipsis" name="apocalipsis"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="run" returnType="void" visibility="public"/>
+        <Method name="prepararse" returnType="void" visibility="private"/>
+        <Method name="comer" returnType="void" visibility="private"/>
+        <Method name="recuperarse" returnType="void" visibility="private"/>
+        <Method name="seleccionarTunel" returnType="Tunel" visibility="private"/>
+        <Method name="formarGrupoYatravesarTunel" returnType="void" visibility="private">
+          <Argument type="Tunel" name="tunel"/>
+        </Method>
+        <Method name="recolectarComida" returnType="void" visibility="private"/>
+        <Method name="atravesarTunelDeVuelta" returnType="void" visibility="private">
+          <Argument type="Tunel" name="tunel"/>
+        </Method>
+        <Method name="depositarComida" returnType="void" visibility="private"/>
+        <Method name="descansar" returnType="void" visibility="private"/>
+        <Method name="isMarcado" returnType="boolean" visibility="public"/>
+        <Method name="setMarcado" returnType="void" visibility="public">
+          <Argument type="boolean" name="marcado"/>
+        </Method>
+        <Method name="getIdH" returnType="String" visibility="public"/>
+        <Method name="morir" returnType="void" visibility="private"/>
+        <Method name="serAtacado" returnType="void" visibility="public"/>
+        <Method name="terminarAtaque" returnType="void" visibility="public" isSynchronized="true">
+          <Argument type="boolean" name="exito"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="Apocalipsis" package="clases" visibility="public" xPosition="964.0" yPosition="1210.0">
+      <Fields>
+        <Field name="humanos" type="List&lt;Humano&gt;" visibility="private"/>
+        <Field name="zombis" type="List&lt;Zombi&gt;" visibility="private"/>
+        <Field name="tuneles" type="List&lt;Tunel&gt;" visibility="private"/>
+        <Field name="zonasRiesgo" type="List&lt;ZonaRiesgo&gt;" visibility="private"/>
+        <Field name="refugio" type="Refugio" visibility="private"/>
+        <Field name="log" type="RegistroLogs" visibility="private"/>
+        <Field name="interfazGrafica" type="InterfazGrafica" visibility="private"/>
+        <Field name="interfazRemoto" type="Remoto" visibility="private"/>
+        <Field name="pausado" type="boolean" visibility="private"/>
+        <Field name="lPausar" type="Lock" visibility="private" isFinal="true"/>
+        <Field name="simuladorPausado" type="Condition" visibility="private" isFinal="true"/>
+        <Field name="pauseLock" type="Object" visibility="private" isFinal="true"/>
+        <Field name="random" type="Random" visibility="private"/>
+        <Field name="logLock" type="Lock" visibility="private" isFinal="true"/>
+        <Field name="server" type="Servidor" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public"/>
+      </Constructors>
+      <Methods>
+        <Method name="inicializarSistema" returnType="void" visibility="private"/>
+        <Method name="añadirZombi" returnType="void" visibility="public">
+          <Argument type="Zombi" name="z"/>
+        </Method>
+        <Method name="iniciarSimulacion" returnType="void" visibility="private"/>
+        <Method name="togglePausa" returnType="void" visibility="public"/>
+        <Method name="revisarPausa" returnType="void" visibility="public"/>
+        <Method name="pausarSimulacion" returnType="void" visibility="public"/>
+        <Method name="reanudarSimulacion" returnType="void" visibility="public"/>
+        <Method name="registrarEvento" returnType="void" visibility="public">
+          <Argument type="String" name="mensaje"/>
+        </Method>
+        <Method name="getTuneles" returnType="List&lt;Tunel&gt;" visibility="public"/>
+        <Method name="getZonasRiesgo" returnType="List&lt;ZonaRiesgo&gt;" visibility="public"/>
+        <Method name="getRefugio" returnType="Refugio" visibility="public"/>
+        <Method name="getLog" returnType="RegistroLogs" visibility="public"/>
+        <Method name="getHumanos" returnType="List&lt;Humano&gt;" visibility="public"/>
+        <Method name="getZombis" returnType="List&lt;Zombi&gt;" visibility="public"/>
+        <Method name="main" returnType="void" visibility="public" isStatic="true">
+          <Argument type="String[]" name="args"/>
+        </Method>
+        <Method name="actualizarInterfaz" returnType="void" visibility="public"/>
+        <Method name="getIdsH" returnType="String" visibility="public">
+          <Argument type="List&lt;Humano&gt;" name="humanos"/>
+        </Method>
+        <Method name="getIdsZ" returnType="String" visibility="public">
+          <Argument type="List&lt;Zombi&gt;" name="zombis"/>
+        </Method>
+        <Method name="getTop3Zombis" returnType="List&lt;Zombi&gt;" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="Tunel" package="clases" visibility="public" xPosition="1490.0" yPosition="713.0">
+      <Fields>
+        <Field name="id" type="String" visibility="private"/>
+        <Field name="zonaRiesgoConectada" type="ZonaRiesgo" visibility="private"/>
+        <Field name="lock" type="ReentrantLock" visibility="private"/>
+        <Field name="condEntrada" type="Condition" visibility="private"/>
+        <Field name="condSalida" type="Condition" visibility="private"/>
+        <Field name="ocupado" type="boolean" visibility="private"/>
+        <Field name="esperandoEntrada" type="int" visibility="private"/>
+        <Field name="esperandoSalida" type="int" visibility="private"/>
+        <Field name="barrier" type="CyclicBarrier" visibility="private"/>
+        <Field name="humanosEntrar" type="List&lt;Humano&gt;" visibility="private"/>
+        <Field name="humanosSalir" type="List&lt;Humano&gt;" visibility="private"/>
+        <Field name="humanoDentro" type="Humano" visibility="private"/>
+        <Field name="apocalipsis" type="Apocalipsis" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="String" name="id"/>
+          <Argument type="ZonaRiesgo" name="zonaRiesgoConectada"/>
+          <Argument type="Apocalipsis" name="apocalipsis"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="formarGrupo" returnType="void" visibility="public">
+          <Argument type="Humano" name="humano"/>
+        </Method>
+        <Method name="salirDelRefugio" returnType="void" visibility="public">
+          <Argument type="Humano" name="humano"/>
+          <Argument type="Apocalipsis" name="apocalipsis"/>
+        </Method>
+        <Method name="entrarAlRefugio" returnType="void" visibility="public">
+          <Argument type="Humano" name="humano"/>
+        </Method>
+        <Method name="imprimirEstadoTunel" returnType="void" visibility="public"/>
+        <Method name="monitorearEstado" returnType="void" visibility="public"/>
+        <Method name="validarEstadoListas" returnType="void" visibility="public"/>
+        <Method name="getIdsH" returnType="String" visibility="public">
+          <Argument type="List&lt;Humano&gt;" name="humanos"/>
+        </Method>
+        <Method name="getId" returnType="String" visibility="public"/>
+        <Method name="getZonaRiesgoConectada" returnType="ZonaRiesgo" visibility="public"/>
+        <Method name="getLock" returnType="ReentrantLock" visibility="public"/>
+        <Method name="setLock" returnType="void" visibility="public">
+          <Argument type="ReentrantLock" name="lock"/>
+        </Method>
+        <Method name="getCondEntrada" returnType="Condition" visibility="public"/>
+        <Method name="setCondEntrada" returnType="void" visibility="public">
+          <Argument type="Condition" name="condEntrada"/>
+        </Method>
+        <Method name="getCondSalida" returnType="Condition" visibility="public"/>
+        <Method name="setCondSalida" returnType="void" visibility="public">
+          <Argument type="Condition" name="condSalida"/>
+        </Method>
+        <Method name="isOcupado" returnType="boolean" visibility="public"/>
+        <Method name="setOcupado" returnType="void" visibility="public">
+          <Argument type="boolean" name="ocupado"/>
+        </Method>
+        <Method name="getEsperandoEntrada" returnType="int" visibility="public"/>
+        <Method name="setEsperandoEntrada" returnType="void" visibility="public">
+          <Argument type="int" name="esperandoEntrada"/>
+        </Method>
+        <Method name="getEsperandoSalida" returnType="int" visibility="public"/>
+        <Method name="setEsperandoSalida" returnType="void" visibility="public">
+          <Argument type="int" name="esperandoSalida"/>
+        </Method>
+        <Method name="getBarrier" returnType="CyclicBarrier" visibility="public"/>
+        <Method name="setBarrier" returnType="void" visibility="public">
+          <Argument type="CyclicBarrier" name="barrier"/>
+        </Method>
+        <Method name="getHumanoDentro" returnType="Humano" visibility="public"/>
+        <Method name="setHumanoDentro" returnType="void" visibility="public">
+          <Argument type="Humano" name="humanoDentro"/>
+        </Method>
+        <Method name="getHumanosEntrar" returnType="List&lt;Humano&gt;" visibility="public"/>
+        <Method name="getHumanosSalir" returnType="List&lt;Humano&gt;" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="Zombi" package="clases" visibility="public" xPosition="952.0" yPosition="703.0">
+      <Fields>
+        <Field name="id" type="String" visibility="private"/>
+        <Field name="areaActual" type="ZonaRiesgo" visibility="private"/>
+        <Field name="contadorMuertes" type="int" visibility="private"/>
+        <Field name="apocalipsis" type="Apocalipsis" visibility="private"/>
+        <Field name="random" type="Random" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="String" name="id"/>
+          <Argument type="ZonaRiesgo" name="areaInicial"/>
+          <Argument type="Apocalipsis" name="simulador"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="run" returnType="void" visibility="public"/>
+        <Method name="deambular" returnType="void" visibility="private"/>
+        <Method name="atacarHumano" returnType="void" visibility="private"/>
+        <Method name="getContadorMuertes" returnType="int" visibility="public"/>
+        <Method name="setId" returnType="void" visibility="public">
+          <Argument type="String" name="id"/>
+        </Method>
+        <Method name="getAreaActual" returnType="ZonaRiesgo" visibility="public"/>
+        <Method name="setAreaActual" returnType="void" visibility="public">
+          <Argument type="ZonaRiesgo" name="areaActual"/>
+        </Method>
+        <Method name="getApocalipsis" returnType="Apocalipsis" visibility="public"/>
+        <Method name="setApocalipsis" returnType="void" visibility="public">
+          <Argument type="Apocalipsis" name="apocalipsis"/>
+        </Method>
+        <Method name="getRandom" returnType="Random" visibility="public"/>
+        <Method name="setRandom" returnType="void" visibility="public">
+          <Argument type="Random" name="random"/>
+        </Method>
+        <Method name="getZombi_Id" returnType="String" visibility="public"/>
+        <Method name="getIdZ" returnType="String" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="RegistroLogs" package="clases" visibility="public" xPosition="1229.0" yPosition="2178.0">
+      <Fields>
+        <Field name="fichero" type="BufferedWriter" visibility="private"/>
+        <Field name="lock" type="ReentrantLock" visibility="private"/>
+        <Field name="formatter" type="DateTimeFormatter" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="String" name="nombreArchivo"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="escribir" returnType="void" visibility="public">
+          <Argument type="String" name="mensaje"/>
+        </Method>
+        <Method name="cerrar" returnType="void" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="Cliente" package="clases.parte2" visibility="public" xPosition="1448.0" yPosition="2952.0">
+      <Fields>
+        <Field name="puerto" type="int" visibility="private" isFinal="true"/>
+        <Field name="cliente" type="Socket" visibility="private"/>
+        <Field name="entrada" type="DataInputStream" visibility="package"/>
+        <Field name="salida" type="DataOutputStream" visibility="package"/>
+        <Field name="cerrojo" type="Lock" visibility="package"/>
+        <Field name="cerrojo2" type="Lock" visibility="package"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="int" name="puerto"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="conectar" returnType="boolean" visibility="public"/>
+        <Method name="desconectar" returnType="void" visibility="public"/>
+        <Method name="getContadores" returnType="String[]" visibility="public"/>
+        <Method name="getTop3Zombis" returnType="String[]" visibility="public"/>
+        <Method name="enviarPausa" returnType="void" visibility="public">
+          <Argument type="boolean" name="pausa"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="Conexion" package="clases.parte2" visibility="public" xPosition="902.0" yPosition="2499.0">
+      <Fields>
+        <Field name="cli" type="Cliente" visibility="private"/>
+        <Field name="tf1" type="JTextField" visibility="private" isFinal="true"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="JTextField" name="tf1"/>
+          <Argument type="JTextField" name="tf2"/>
+          <Argument type="JTextField" name="tf3"/>
+          <Argument type="JTextField" name="tf4"/>
+          <Argument type="JTextField" name="tf5"/>
+          <Argument type="JTextField" name="tf6"/>
+          <Argument type="JTextField" name="tf7"/>
+          <Argument type="JTextField" name="tf8"/>
+          <Argument type="JTextField" name="tf9"/>
+          <Argument type="JTextField" name="tf10"/>
+          <Argument type="JTextField" name="tf11"/>
+          <Argument type="JTextField" name="tf12"/>
+          <Argument type="JTextField" name="tf13"/>
+          <Argument type="JTextField" name="tf14"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="run" returnType="void" visibility="public"/>
+        <Method name="actualizarContadores" returnType="void" visibility="private">
+          <Argument type="String[]" name="valoresContadores"/>
+        </Method>
+        <Method name="actualizarTop3Zombis" returnType="void" visibility="public">
+          <Argument type="String[]" name="top3Zombis"/>
+        </Method>
+        <Method name="enviarPausa" returnType="void" visibility="public">
+          <Argument type="boolean" name="pausa"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="Servidor" package="clases.parte2" visibility="public" xPosition="982.0" yPosition="2168.0">
+      <Fields>
+        <Field name="simulador" type="Apocalipsis" visibility="private"/>
+        <Field name="servidor" type="ServerSocket" visibility="private"/>
+        <Field name="cerrar" type="boolean" visibility="private"/>
+        <Field name="boton" type="boolean" visibility="package"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="Apocalipsis" name="ap"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="run" returnType="void" visibility="public"/>
+        <Method name="cerrar" returnType="void" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="ZonaRiesgo" package="clases" visibility="public" xPosition="10.0" yPosition="1527.0">
+      <Fields>
+        <Field name="id" type="String" visibility="private"/>
+        <Field name="humanosPresentes" type="List&lt;Humano&gt;" visibility="private"/>
+        <Field name="humanosNOatacados" type="List&lt;Humano&gt;" visibility="private"/>
+        <Field name="zombisPresentes" type="List&lt;Zombi&gt;" visibility="private"/>
+        <Field name="lockHumanos" type="ReentrantLock" visibility="private"/>
+        <Field name="lockZombis" type="ReentrantLock" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="String" name="id"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="addHumano" returnType="void" visibility="public">
+          <Argument type="Humano" name="humano"/>
+        </Method>
+        <Method name="addHumanoNOatacado" returnType="void" visibility="public">
+          <Argument type="Humano" name="humano"/>
+        </Method>
+        <Method name="removeHumanoNOatacado" returnType="void" visibility="public">
+          <Argument type="Humano" name="humano"/>
+        </Method>
+        <Method name="getHumanosNOatacados" returnType="List&lt;Humano&gt;" visibility="public"/>
+        <Method name="removeHumano" returnType="void" visibility="public">
+          <Argument type="Humano" name="humano"/>
+        </Method>
+        <Method name="addZombi" returnType="void" visibility="public">
+          <Argument type="Zombi" name="zombi"/>
+        </Method>
+        <Method name="removeZombi" returnType="void" visibility="public">
+          <Argument type="Zombi" name="zombi"/>
+        </Method>
+        <Method name="getHumanos" returnType="List&lt;Humano&gt;" visibility="public"/>
+        <Method name="getZombis" returnType="List&lt;Zombi&gt;" visibility="public"/>
+        <Method name="getId" returnType="String" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="Refugio" package="clases" visibility="public" xPosition="419.0" yPosition="2091.0">
+      <Fields>
+        <Field name="comidaDisponible" type="int" visibility="private"/>
+        <Field name="lockComida" type="ReentrantLock" visibility="private"/>
+        <Field name="hayComida" type="Condition" visibility="private"/>
+        <Field name="humanosEnDescanso" type="List&lt;Humano&gt;" visibility="private"/>
+        <Field name="humanosEnComedor" type="List&lt;Humano&gt;" visibility="private"/>
+        <Field name="humanosEnZonaComun" type="List&lt;Humano&gt;" visibility="private"/>
+        <Field name="lockZonaDescanso" type="ReentrantLock" visibility="private"/>
+        <Field name="lockComedor" type="ReentrantLock" visibility="private"/>
+        <Field name="lockZonaComun" type="ReentrantLock" visibility="private"/>
+        <Field name="apocalipsis" type="Apocalipsis" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public"/>
+      </Constructors>
+      <Methods>
+        <Method name="agregarComida" returnType="void" visibility="public">
+          <Argument type="int" name="cantidad"/>
+        </Method>
+        <Method name="tomarComida" returnType="void" visibility="public"/>
+        <Method name="getComidaDisponible" returnType="int" visibility="public"/>
+        <Method name="entrarZonaDescanso" returnType="void" visibility="public">
+          <Argument type="Humano" name="humano"/>
+        </Method>
+        <Method name="salirZonaDescanso" returnType="void" visibility="public">
+          <Argument type="Humano" name="humano"/>
+        </Method>
+        <Method name="entrarComedor" returnType="void" visibility="public">
+          <Argument type="Humano" name="humano"/>
+        </Method>
+        <Method name="salirComedor" returnType="void" visibility="public">
+          <Argument type="Humano" name="humano"/>
+        </Method>
+        <Method name="entrarZonaComun" returnType="void" visibility="public">
+          <Argument type="Humano" name="humano"/>
+        </Method>
+        <Method name="salirZonaComun" returnType="void" visibility="public">
+          <Argument type="Humano" name="humano"/>
+        </Method>
+        <Method name="getHumanosEnDescanso" returnType="List&lt;Humano&gt;" visibility="public"/>
+        <Method name="getHumanosEnComedor" returnType="List&lt;Humano&gt;" visibility="public"/>
+        <Method name="getHumanosEnZonaComun" returnType="List&lt;Humano&gt;" visibility="public"/>
+        <Method name="imprimirEstadoRefugio" returnType="void" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="Remoto" package="interfaces" visibility="public" xPosition="333.0" yPosition="2825.0">
+      <Fields>
+        <Field name="corriendo" type="boolean" visibility="private"/>
+        <Field name="c" type="Conexion" visibility="package"/>
+        <Field name="simulador" type="Apocalipsis" visibility="private" isStatic="true"/>
+        <Field name="BotonPlayStop" type="javax.swing.JToggleButton" visibility="private"/>
+        <Field name="jLabel1" type="javax.swing.JLabel" visibility="private"/>
+        <Field name="jLabel2" type="javax.swing.JLabel" visibility="private"/>
+        <Field name="jLabel3" type="javax.swing.JLabel" visibility="private"/>
+        <Field name="jLabel4" type="javax.swing.JLabel" visibility="private"/>
+        <Field name="jLabel5" type="javax.swing.JLabel" visibility="private"/>
+        <Field name="jTextFieldHZR1" type="javax.swing.JTextField" visibility="private"/>
+        <Field name="jTextFieldHZR2" type="javax.swing.JTextField" visibility="private"/>
+        <Field name="jTextFieldHZR3" type="javax.swing.JTextField" visibility="private"/>
+        <Field name="jTextFieldHZR4" type="javax.swing.JTextField" visibility="private"/>
+        <Field name="jTextFieldRefugio" type="javax.swing.JTextField" visibility="private"/>
+        <Field name="jTextFieldT1" type="javax.swing.JTextField" visibility="private"/>
+        <Field name="jTextFieldT2" type="javax.swing.JTextField" visibility="private"/>
+        <Field name="jTextFieldT3" type="javax.swing.JTextField" visibility="private"/>
+        <Field name="jTextFieldT4" type="javax.swing.JTextField" visibility="private"/>
+        <Field name="jTextFieldTopZ" type="javax.swing.JTextField" visibility="private"/>
+        <Field name="jTextFieldZZR1" type="javax.swing.JTextField" visibility="private"/>
+        <Field name="jTextFieldZZR2" type="javax.swing.JTextField" visibility="private"/>
+        <Field name="jTextFieldZZR3" type="javax.swing.JTextField" visibility="private"/>
+        <Field name="jTextFieldZZR4" type="javax.swing.JTextField" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="Apocalipsis" name="simulador"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="initComponents" returnType="// &lt;editor-fold defaultstate=&quot;collapsed&quot; desc=&quot;Generated Code&quot;&gt;//GEN-BEGIN:initComponents void" visibility="private"/>
+        <Method name="BotonPlayStopActionPerformed" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="jTextFieldT4ActionPerformed" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="jTextFieldZZR4ActionPerformed" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="jTextFieldHZR4ActionPerformed" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="jTextFieldT1ActionPerformed" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="jTextFieldTopZActionPerformed" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="getBotonPlayStop" returnType="JToggleButton" visibility="public"/>
+        <Method name="setBotonPlayStop" returnType="void" visibility="public">
+          <Argument type="JToggleButton" name="BotonPlayStop"/>
+        </Method>
+        <Method name="main" returnType="void" visibility="public" isStatic="true">
+          <Argument type="String" name="args"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="InterfazGrafica" package="interfaces" visibility="public" xPosition="2373.0" yPosition="679.0">
+      <Fields>
+        <Field name="corriendo" type="boolean" visibility="private"/>
+        <Field name="simulador" type="Apocalipsis" visibility="private" isStatic="true"/>
+        <Field name="BotonPlayStop" type="javax.swing.JToggleButton" visibility="private"/>
+        <Field name="LabelRefugio" type="javax.swing.JLabel" visibility="private"/>
+        <Field name="jFrame1" type="javax.swing.JFrame" visibility="private"/>
+        <Field name="jLabel1" type="javax.swing.JLabel" visibility="private"/>
+        <Field name="jLabel2" type="javax.swing.JLabel" visibility="private"/>
+        <Field name="jLabel4" type="javax.swing.JLabel" visibility="private"/>
+        <Field name="jLabel5" type="javax.swing.JLabel" visibility="private"/>
+        <Field name="jLabelComedor" type="javax.swing.JLabel" visibility="private"/>
+        <Field name="jLabelComida" type="javax.swing.JLabel" visibility="private"/>
+        <Field name="jPanel2" type="javax.swing.JPanel" visibility="private"/>
+        <Field name="jPanelComedor" type="javax.swing.JPanel" visibility="private"/>
+        <Field name="jPanelDescanso" type="javax.swing.JPanel" visibility="private"/>
+        <Field name="jPanelT1" type="javax.swing.JPanel" visibility="private"/>
+        <Field name="jPanelT2" type="javax.swing.JPanel" visibility="private"/>
+        <Field name="jPanelT3" type="javax.swing.JPanel" visibility="private"/>
+        <Field name="jPanelT4" type="javax.swing.JPanel" visibility="private"/>
+        <Field name="jPanelZR1" type="javax.swing.JPanel" visibility="private"/>
+        <Field name="jPanelZR2" type="javax.swing.JPanel" visibility="private"/>
+        <Field name="jPanelZR3" type="javax.swing.JPanel" visibility="private"/>
+        <Field name="jPanelZR4" type="javax.swing.JPanel" visibility="private"/>
+        <Field name="jPanelZonaComun" type="javax.swing.JPanel" visibility="private"/>
+        <Field name="jTextFieldComedor" type="javax.swing.JTextField" visibility="private"/>
+        <Field name="jTextFieldComida" type="javax.swing.JTextField" visibility="private"/>
+        <Field name="jTextFieldDescanso" type="javax.swing.JTextField" visibility="private"/>
+        <Field name="jTextFieldT11" type="javax.swing.JTextField" visibility="private"/>
+        <Field name="jTextFieldT12" type="javax.swing.JTextField" visibility="private"/>
+        <Field name="jTextFieldT13" type="javax.swing.JTextField" visibility="private"/>
+        <Field name="jTextFieldT21" type="javax.swing.JTextField" visibility="private"/>
+        <Field name="jTextFieldT22" type="javax.swing.JTextField" visibility="private"/>
+        <Field name="jTextFieldT23" type="javax.swing.JTextField" visibility="private"/>
+        <Field name="jTextFieldT31" type="javax.swing.JTextField" visibility="private"/>
+        <Field name="jTextFieldT32" type="javax.swing.JTextField" visibility="private"/>
+        <Field name="jTextFieldT33" type="javax.swing.JTextField" visibility="private"/>
+        <Field name="jTextFieldT41" type="javax.swing.JTextField" visibility="private"/>
+        <Field name="jTextFieldT42" type="javax.swing.JTextField" visibility="private"/>
+        <Field name="jTextFieldT43" type="javax.swing.JTextField" visibility="private"/>
+        <Field name="jTextFieldZR11" type="javax.swing.JTextField" visibility="private"/>
+        <Field name="jTextFieldZR12" type="javax.swing.JTextField" visibility="private"/>
+        <Field name="jTextFieldZR21" type="javax.swing.JTextField" visibility="private"/>
+        <Field name="jTextFieldZR22" type="javax.swing.JTextField" visibility="private"/>
+        <Field name="jTextFieldZR31" type="javax.swing.JTextField" visibility="private"/>
+        <Field name="jTextFieldZR32" type="javax.swing.JTextField" visibility="private"/>
+        <Field name="jTextFieldZR41" type="javax.swing.JTextField" visibility="private"/>
+        <Field name="jTextFieldZR42" type="javax.swing.JTextField" visibility="private"/>
+        <Field name="jTextFieldZonaComun" type="javax.swing.JTextField" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="Apocalipsis" name="simulador"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="initComponents" returnType="// &lt;editor-fold defaultstate=&quot;collapsed&quot; desc=&quot;Generated Code&quot;&gt;//GEN-BEGIN:initComponents void" visibility="private"/>
+        <Method name="jTextFieldComedorActionPerformed" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="jTextFieldT42ActionPerformed" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="jTextFieldT21ActionPerformed" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="jTextFieldComidaActionPerformed" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="BotonPlayStopActionPerformed" returnType="void" visibility="private">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="main" returnType="void" visibility="public" isStatic="true">
+          <Argument type="String" name="args"/>
+        </Method>
+        <Method name="getLabelRefugio" returnType="JLabel" visibility="public"/>
+        <Method name="getjFrame1" returnType="JFrame" visibility="public"/>
+        <Method name="getjLabel1" returnType="JLabel" visibility="public"/>
+        <Method name="getjLabel2" returnType="JLabel" visibility="public"/>
+        <Method name="getjLabel4" returnType="JLabel" visibility="public"/>
+        <Method name="getjLabel5" returnType="JLabel" visibility="public"/>
+        <Method name="getjLabelComedor" returnType="JLabel" visibility="public"/>
+        <Method name="getjLabelComida" returnType="JLabel" visibility="public"/>
+        <Method name="getjPanel2" returnType="JPanel" visibility="public"/>
+        <Method name="getjPanelComedor" returnType="JPanel" visibility="public"/>
+        <Method name="getjPanelDescanso" returnType="JPanel" visibility="public"/>
+        <Method name="getjPanelT1" returnType="JPanel" visibility="public"/>
+        <Method name="getjPanelT2" returnType="JPanel" visibility="public"/>
+        <Method name="getjPanelT3" returnType="JPanel" visibility="public"/>
+        <Method name="getjPanelT4" returnType="JPanel" visibility="public"/>
+        <Method name="getjPanelZR1" returnType="JPanel" visibility="public"/>
+        <Method name="getjPanelZR2" returnType="JPanel" visibility="public"/>
+        <Method name="getjPanelZR3" returnType="JPanel" visibility="public"/>
+        <Method name="getjPanelZR4" returnType="JPanel" visibility="public"/>
+        <Method name="getjPanelZonaComun" returnType="JPanel" visibility="public"/>
+        <Method name="getjTextField41" returnType="JTextField" visibility="public"/>
+        <Method name="getjTextField42" returnType="JTextField" visibility="public"/>
+        <Method name="getjTextFieldComedor" returnType="JTextField" visibility="public"/>
+        <Method name="getjTextFieldComida" returnType="JTextField" visibility="public"/>
+        <Method name="getjTextFieldDescanso" returnType="JTextField" visibility="public"/>
+        <Method name="getjTextFieldT11" returnType="JTextField" visibility="public"/>
+        <Method name="getjTextFieldT12" returnType="JTextField" visibility="public"/>
+        <Method name="getjTextFieldT13" returnType="JTextField" visibility="public"/>
+        <Method name="getjTextFieldT21" returnType="JTextField" visibility="public"/>
+        <Method name="getjTextFieldT22" returnType="JTextField" visibility="public"/>
+        <Method name="getjTextFieldT23" returnType="JTextField" visibility="public"/>
+        <Method name="getjTextFieldT31" returnType="JTextField" visibility="public"/>
+        <Method name="getjTextFieldT32" returnType="JTextField" visibility="public"/>
+        <Method name="getjTextFieldT33" returnType="JTextField" visibility="public"/>
+        <Method name="getjTextFieldT41" returnType="JTextField" visibility="public"/>
+        <Method name="getjTextFieldT42" returnType="JTextField" visibility="public"/>
+        <Method name="getjTextFieldT43" returnType="JTextField" visibility="public"/>
+        <Method name="isCorriendo" returnType="boolean" visibility="public"/>
+        <Method name="setCorriendo" returnType="void" visibility="public">
+          <Argument type="boolean" name="corriendo"/>
+        </Method>
+        <Method name="getSimulador" returnType="Apocalipsis" visibility="public" isStatic="true"/>
+        <Method name="setSimulador" returnType="void" visibility="public" isStatic="true">
+          <Argument type="Apocalipsis" name="simulador"/>
+        </Method>
+        <Method name="getBotonPlayStop" returnType="JToggleButton" visibility="public"/>
+        <Method name="setBotonPlayStop" returnType="void" visibility="public">
+          <Argument type="JToggleButton" name="BotonPlayStop"/>
+        </Method>
+        <Method name="getjTextFieldZR11" returnType="JTextField" visibility="public"/>
+        <Method name="getjTextFieldZR12" returnType="JTextField" visibility="public"/>
+        <Method name="getjTextFieldZR21" returnType="JTextField" visibility="public"/>
+        <Method name="getjTextFieldZR22" returnType="JTextField" visibility="public"/>
+        <Method name="getjTextFieldZR31" returnType="JTextField" visibility="public"/>
+        <Method name="getjTextFieldZR32" returnType="JTextField" visibility="public"/>
+        <Method name="getjTextFieldZonaComun" returnType="JTextField" visibility="public"/>
+        <Method name="getRootPane" returnType="JRootPane" visibility="public"/>
+        <Method name="isRootPaneCheckingEnabled" returnType="boolean" visibility="public"/>
+        <Method name="getAccessibleContext" returnType="AccessibleContext" visibility="public"/>
+        <Method name="getDEFAULT_CURSOR" returnType="int" visibility="public" isStatic="true"/>
+        <Method name="getCROSSHAIR_CURSOR" returnType="int" visibility="public" isStatic="true"/>
+        <Method name="getTEXT_CURSOR" returnType="int" visibility="public" isStatic="true"/>
+        <Method name="getWAIT_CURSOR" returnType="int" visibility="public" isStatic="true"/>
+        <Method name="getSW_RESIZE_CURSOR" returnType="int" visibility="public" isStatic="true"/>
+        <Method name="getSE_RESIZE_CURSOR" returnType="int" visibility="public" isStatic="true"/>
+        <Method name="getNW_RESIZE_CURSOR" returnType="int" visibility="public" isStatic="true"/>
+        <Method name="getNE_RESIZE_CURSOR" returnType="int" visibility="public" isStatic="true"/>
+        <Method name="getN_RESIZE_CURSOR" returnType="int" visibility="public" isStatic="true"/>
+        <Method name="getS_RESIZE_CURSOR" returnType="int" visibility="public" isStatic="true"/>
+        <Method name="getW_RESIZE_CURSOR" returnType="int" visibility="public" isStatic="true"/>
+        <Method name="getE_RESIZE_CURSOR" returnType="int" visibility="public" isStatic="true"/>
+        <Method name="getHAND_CURSOR" returnType="int" visibility="public" isStatic="true"/>
+        <Method name="getMOVE_CURSOR" returnType="int" visibility="public" isStatic="true"/>
+        <Method name="getNORMAL" returnType="int" visibility="public" isStatic="true"/>
+        <Method name="getICONIFIED" returnType="int" visibility="public" isStatic="true"/>
+        <Method name="getMAXIMIZED_HORIZ" returnType="int" visibility="public" isStatic="true"/>
+        <Method name="getMAXIMIZED_VERT" returnType="int" visibility="public" isStatic="true"/>
+        <Method name="getMAXIMIZED_BOTH" returnType="int" visibility="public" isStatic="true"/>
+        <Method name="getTOP_ALIGNMENT" returnType="float" visibility="public" isStatic="true"/>
+        <Method name="getCENTER_ALIGNMENT" returnType="float" visibility="public" isStatic="true"/>
+        <Method name="getBOTTOM_ALIGNMENT" returnType="float" visibility="public" isStatic="true"/>
+        <Method name="getLEFT_ALIGNMENT" returnType="float" visibility="public" isStatic="true"/>
+        <Method name="getRIGHT_ALIGNMENT" returnType="float" visibility="public" isStatic="true"/>
+        <Method name="getDO_NOTHING_ON_CLOSE" returnType="int" visibility="public" isStatic="true"/>
+        <Method name="getHIDE_ON_CLOSE" returnType="int" visibility="public" isStatic="true"/>
+        <Method name="getDISPOSE_ON_CLOSE" returnType="int" visibility="public" isStatic="true"/>
+        <Method name="getEXIT_ON_CLOSE" returnType="int" visibility="public" isStatic="true"/>
+        <Method name="getWIDTH" returnType="int" visibility="public" isStatic="true"/>
+        <Method name="getHEIGHT" returnType="int" visibility="public" isStatic="true"/>
+        <Method name="getPROPERTIES" returnType="int" visibility="public" isStatic="true"/>
+        <Method name="getSOMEBITS" returnType="int" visibility="public" isStatic="true"/>
+        <Method name="getFRAMEBITS" returnType="int" visibility="public" isStatic="true"/>
+        <Method name="getALLBITS" returnType="int" visibility="public" isStatic="true"/>
+        <Method name="getERROR" returnType="int" visibility="public" isStatic="true"/>
+        <Method name="getABORT" returnType="int" visibility="public" isStatic="true"/>
+        <Method name="getjTextFieldZR41" returnType="JTextField" visibility="public"/>
+        <Method name="setjTextFieldZR41" returnType="void" visibility="public">
+          <Argument type="JTextField" name="jTextFieldZR41"/>
+        </Method>
+        <Method name="getjTextFieldZR42" returnType="JTextField" visibility="public"/>
+        <Method name="setjTextFieldZR42" returnType="void" visibility="public">
+          <Argument type="JTextField" name="jTextFieldZR42"/>
+        </Method>
+      </Methods>
+    </Class>
+  </ClassDiagramComponents>
+  <ClassDiagramRelations>
+    <HasRelation name="simulador" source="clases.parte2.Servidor" target="clases.Apocalipsis" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="c" source="interfaces.Remoto" target="clases.parte2.Conexion" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="zonaRiesgoConectada" source="clases.Tunel" target="clases.ZonaRiesgo" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="clases.Tunel" target="clases.Humano" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="clases.Apocalipsis" target="clases.Zombi" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="clases.Refugio" target="clases.Humano" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="simulador" source="interfaces.InterfazGrafica" target="clases.Apocalipsis" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="apocalipsis" source="clases.Humano" target="clases.Apocalipsis" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="humanosEnDescanso" source="clases.Refugio" target="clases.Humano" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List&lt;Humano&gt;"/>
+    <UseRelation source="clases.Apocalipsis" target="clases.Humano" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="apocalipsis" source="clases.Tunel" target="clases.Apocalipsis" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="humanosNOatacados" source="clases.ZonaRiesgo" target="clases.Humano" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List&lt;Humano&gt;"/>
+    <HasRelation name="humanosSalir" source="clases.Tunel" target="clases.Humano" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List&lt;Humano&gt;"/>
+    <UseRelation source="clases.ZonaRiesgo" target="clases.Zombi" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="simulador" source="interfaces.Remoto" target="clases.Apocalipsis" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="clases.Zombi" target="clases.ZonaRiesgo" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="clases.Apocalipsis" target="clases.RegistroLogs" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="clases.Apocalipsis" target="clases.Tunel" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="interfaces.InterfazGrafica" target="clases.Apocalipsis" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="clases.ZonaRiesgo" target="clases.Humano" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="tuneles" source="clases.Apocalipsis" target="clases.Tunel" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List&lt;Tunel&gt;"/>
+    <HasRelation name="humanosEnZonaComun" source="clases.Refugio" target="clases.Humano" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List&lt;Humano&gt;"/>
+    <UseRelation source="clases.Tunel" target="clases.Apocalipsis" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="zombisPresentes" source="clases.ZonaRiesgo" target="clases.Zombi" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List&lt;Zombi&gt;"/>
+    <HasRelation name="apocalipsis" source="clases.Refugio" target="clases.Apocalipsis" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="apocalipsis" source="clases.Zombi" target="clases.Apocalipsis" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="server" source="clases.Apocalipsis" target="clases.parte2.Servidor" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="humanosPresentes" source="clases.ZonaRiesgo" target="clases.Humano" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List&lt;Humano&gt;"/>
+    <HasRelation name="humanosEntrar" source="clases.Tunel" target="clases.Humano" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List&lt;Humano&gt;"/>
+    <HasRelation name="cli" source="clases.parte2.Conexion" target="clases.parte2.Cliente" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="zonaRiesgoActual" source="clases.Humano" target="clases.ZonaRiesgo" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="clases.Apocalipsis" target="clases.ZonaRiesgo" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="refugio" source="clases.Apocalipsis" target="clases.Refugio" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="clases.Tunel" target="clases.ZonaRiesgo" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="clases.Humano" target="clases.Tunel" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="interfazRemoto" source="clases.Apocalipsis" target="interfaces.Remoto" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="interfazGrafica" source="clases.Apocalipsis" target="interfaces.InterfazGrafica" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="areaActual" source="clases.Zombi" target="clases.ZonaRiesgo" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="clases.Apocalipsis" target="clases.Refugio" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="humanoDentro" source="clases.Tunel" target="clases.Humano" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="humanos" source="clases.Apocalipsis" target="clases.Humano" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List&lt;Humano&gt;"/>
+    <HasRelation name="log" source="clases.Apocalipsis" target="clases.RegistroLogs" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="clases.Zombi" target="clases.Apocalipsis" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="humanosEnComedor" source="clases.Refugio" target="clases.Humano" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List&lt;Humano&gt;"/>
+    <HasRelation name="zombis" source="clases.Apocalipsis" target="clases.Zombi" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List&lt;Zombi&gt;"/>
+    <HasRelation name="zonasRiesgo" source="clases.Apocalipsis" target="clases.ZonaRiesgo" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List&lt;ZonaRiesgo&gt;"/>
+  </ClassDiagramRelations>
+</ClassDiagram>
